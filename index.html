@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SINAR - Sistem Informasi Nomor Arsip</title>
+
+  <!-- CSS: Google Font + simple styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <style>
+    :root{
+      --brand:#1f7bd6;
+      --accent:#6b2fb6;
+      --muted:#666;
+      --card:#ffffff;
+      --bg:#f5f6f8;
+      --glass: rgba(255,255,255,0.7);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      background: linear-gradient(180deg,#f7fbff 0%, #f5f6f8 100%);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    /* header */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 18px;
+      background:var(--card);
+      box-shadow: 0 2px 6px rgba(20,20,30,0.05);
+      position:sticky;
+      top:0;
+      z-index:30;
+    }
+    .brand-left{display:flex;align-items:center;gap:12px}
+    .org-logos{display:flex;gap:10px;align-items:center}
+    .org-logos img{height:42px;object-fit:contain;border-radius:6px;background:#fff;padding:4px;border:1px solid #eee}
+    .site-title{line-height:1}
+    .site-title h1{margin:0;font-size:18px;letter-spacing:0.4px}
+    .site-title p{margin:0;font-size:12px;color:var(--muted)}
+    nav{display:flex;gap:8px}
+    nav a{
+      text-decoration:none;color:var(--muted);padding:8px 12px;border-radius:8px;font-weight:600;font-size:14px;
+    }
+    nav a.active{background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff}
+    /* container */
+    .container{max-width:1100px;margin:18px auto;padding:0 16px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:18px;
+      align-items:start;
+    }
+
+    /* card */
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:16px;
+      box-shadow: 0 6px 18px rgba(34,34,50,0.05);
+    }
+
+    /* filters */
+    .filters{display:flex;flex-direction:column;gap:10px}
+    .filters .row{display:flex;gap:8px;flex-wrap:wrap}
+    select, input[type="text"]{
+      width:100%;
+      padding:10px;border-radius:8px;border:1px solid #e6e6e9;background:#fff;font-size:14px;
+    }
+    .stat{
+      display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;
+      background:linear-gradient(90deg,#2fb86b,#2b9f5b);color:#fff;font-weight:700;font-size:20px;
+    }
+
+    /* chart area */
+    .chart-wrap{height:320px;padding:12px}
+
+    /* table area */
+    .table-wrap{margin-top:14px;padding:4px}
+    table.dataTable thead th{background: linear-gradient(90deg,var(--brand),#6d8be0); color:#fff;}
+
+    /* footer small */
+    footer.small{margin-top:20px;text-align:center;color:var(--muted);font-size:13px;padding:8px}
+
+    /* responsive */
+    @media (max-width:1000px){
+      .grid{grid-template-columns:1fr; }
+      .org-logos img{height:36px}
+    }
+    @media (max-width:520px){
+      header{padding:10px}
+      .site-title h1{font-size:16px}
+      .site-title p{font-size:11px}
+      .org-logos img{height:30px}
+    }
+
+    /* cute svg logo container */
+    .aruna-logo{display:flex;align-items:center;gap:12px}
+    .aruna-logo svg{height:56px;width:auto}
+    .tagline{font-size:13px;color:var(--muted);margin-top:4px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand-left">
+      <!-- left: ARUNA logo (SVG) -->
+      <div class="aruna-logo">
+        <!-- SVG Logo: envelope + ARUNA text -->
+        <svg viewBox="0 0 220 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stop-color="#1f7bd6"/>
+              <stop offset="1" stop-color="#6b2fb6"/>
+            </linearGradient>
+            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#1f7bd6" flood-opacity="0.12"/>
+            </filter>
+          </defs>
+          <!-- envelope icon -->
+          <g transform="translate(6,6)">
+            <rect x="0" y="6" rx="7" ry="7" width="48" height="36" fill="url(#g1)" filter="url(#shadow)"/>
+            <polyline points="6,10 30,26 54,10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="4" y="8" width="44" height="30" fill="none" stroke="#fff" stroke-width="2" rx="6"/>
+          </g>
+          <!-- text ARUNA -->
+          <g transform="translate(70,12)" font-family="Inter, Arial, sans-serif">
+            <text x="0" y="16" font-size="28" font-weight="700" fill="url(#g1)">ARUNA</text>
+            <text x="0" y="36" font-size="11" fill="#6b6b6b">Arsip & Registrasi Urusan Naskah Administrative</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;">
+      <nav>
+        <a href="#" class="active" data-page="home">Beranda</a>
+        <a href="#" data-page="pedoman">Pedoman</a>
+        <a href="#" data-page="faq">FAQ</a>
+      </nav>
+
+      <div class="org-logos" aria-hidden>
+        <!-- Replace with actual logos in /assets/ -->
+        <img src="assets/logo_bspji.png" alt="BSPJI Ambon" id="logo-bspji">
+        <img src="assets/logo_kemenperin.png" alt="Kemenperin" id="logo-kemenperin">
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HOME PAGE -->
+    <section id="page-home">
+      <div class="grid">
+        <!-- left: main card -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <div>
+              <h2 style="margin:0 0 6px 0">Dashboard Monitoring Tata Naskah Dinas</h2>
+              <div class="tagline">ARUNA — Arsip & Registrasi Urusan Naskah Administrative | BSPJI Ambon</div>
+            </div>
+            <div style="min-width:220px">
+              <div class="stat">
+                <div style="font-size:12px;opacity:0.95">TOTAL SURAT</div>
+                <div id="totalSurat">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- filters -->
+          <div style="margin-top:14px" class="filters card" id="filterCard">
+            <div class="row">
+              <select id="filterTahun"><option value="">-- Pilih Tahun --</option></select>
+              <select id="filterBulan"><option value="">-- Pilih Bulan --</option></select>
+              <select id="filterTanggal"><option value="">-- Pilih Tanggal --</option></select>
+            </div>
+            <div class="row">
+              <select id="filterJenis"><option value="">-- Jenis Surat --</option><option value="Biasa">Biasa</option><option value="Rahasia">Rahasia</option></select>
+              <select id="filterKlasifikasi"><option value="">-- Klasifikasi --</option></select>
+              <select id="filterTim"><option value="">-- Tim Penyusun --</option><option value="PJI">PJI</option><option value="PKIV">PKIV</option><option value="OPTI">OPTI</option><option value="Tata Usaha">Tata Usaha</option><option value="Keuangan">Keuangan</option></select>
+            </div>
+            <div class="row" style="justify-content:flex-end">
+              <input type="text" id="searchBox" placeholder="Cari nomor surat / asal bagian ..." style="max-width:360px">
+            </div>
+          </div>
+
+          <!-- chart -->
+          <div class="card" style="margin-top:14px">
+            <div style="font-weight:700;margin-bottom:6px">Jumlah Surat berdasarkan Klasifikasi</div>
+            <div class="chart-wrap">
+              <canvas id="klasChart"></canvas>
+            </div>
+          </div>
+
+          <!-- table -->
+          <div class="card table-wrap">
+            <table id="suratTable" class="display" style="width:100%">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nomor Surat</th>
+                  <th>Tanggal</th>
+                  <th>Bulan</th>
+                  <th>Tahun</th>
+                  <th>Klasifikasi</th>
+                  <th>Asal Bagian</th>
+                  <th>Jenis Surat</th>
+                  <th>Tim Penyusun</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <!-- JS inject -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- right: sidebar summary / filters -->
+        <aside class="card" style="height:100%;position:relative;">
+          <div style="font-weight:700;margin-bottom:8px">Filter cepat</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button onclick="clearFilters()" style="padding:10px;border-radius:10px;border:none;background:#eee;font-weight:700">Reset Filter</button>
+            <div style="font-size:13px;color:var(--muted)">Pilih tahun, bulan, atau jenis surat untuk melihat data spesifik.</div>
+            <hr style="border:none;border-top:1px dashed #eee;margin:8px 0">
+            <div style="font-size:13px;color:var(--muted)">Export (CSV):</div>
+            <button id="exportCsv" style="padding:10px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff">Download CSV</button>
+          </div>
+
+          <div style="position:absolute;bottom:12px;left:12px;right:12px;font-size:12px;color:var(--muted)">
+            Disclaimer: Data contoh dummy untuk media pembelajaran. Ganti dengan data real sesuai kebutuhan.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PEDOMAN PAGE -->
+    <section id="page-pedoman" style="display:none">
+      <div class="card">
+        <h2>Pedoman & Dokumen</h2>
+        <p style="color:var(--muted)">Unduh dan scroll pedoman penomoran naskah dinas di bawah. Letakkan file PDF pada <code>/assets/pedoman.pdf</code></p>
+
+        <div style="margin:12px 0">
+          <iframe id="pdfViewer" src="assets/pedoman.pdf" width="100%" height="600px" style="border:1px solid #eee;border-radius:8px"></iframe>
+        </div>
+
+        <div style="margin-top:10px">
+          <h3>Infografis</h3>
+          <p style="color:var(--muted)">Gambar infografis terkait proses penomoran (format JPG/PNG). Letakkan pada <code>/assets/infografis.jpg</code></p>
+          <img src="assets/infografis.jpg" alt="Infografis" style="max-width:100%;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ PAGE -->
+    <section id="page-faq" style="display:none">
+      <div class="card">
+        <h2>FAQ — Pertanyaan yang Sering Diajukan</h2>
+        <div style="margin-top:12px">
+          <details open>
+            <summary style="font-weight:700">Bagaimana cara mengajukan penomoran surat?</summary>
+            <div style="padding:8px 12px;color:var(--muted)">Gunakan formulir internal dan pilih tim penyusun, jenis surat, klasifikasi lalu submit — sistem ARUNA akan menghasilkan nomor otomatis dan menyimpan historinya.</div>
+          </details>
+
+          <details style="margin-top:10px">
+            <summary style="font-weight:700">Siapa yang dapat mengakses ARUNA?</summary>
+            <div style="padding:8px 12px;color:var(--muted)">User internal BSPJI Ambon yang terdaftar (akun dinas). Hak akses bisa dibatasi oleh admin.</div>
+          </details>
+
+          <details style="margin-top:10px">
+            <summary style="font-weight:700">File pedoman tidak terbuka / PDF tidak muncul — apa yang harus dilakukan?</summary>
+            <div style="padding:8px 12px;color:var(--muted)">Pastikan file <code>/assets/pedoman.pdf</code> ada di repo. Jika masih bermasalah, cek log browser (Console) untuk pesan error CORS atau path file.</div>
+          </details>
+
+          <details style="margin-top:10px">
+            <summary style="font-weight:700">Bagaimana cara mengganti logo BSPJI atau Kementerian?</summary>
+            <div style="padding:8px 12px;color:var(--muted)">Ganti file gambar di <code>/assets/logo_bspji.png</code> dan <code>/assets/logo_kemenperin.png</code> atau edit tag <code>&lt;img&gt;</code>.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="small">Dibuat untuk BSPJI Ambon — ARUNA Demo • Source: contoh data</footer>
+  </main>
+
+  <!-- JS libs -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <script>
+    /***********************
+     * Sample data generator
+     ************************/
+    const klasifikasiList = ["BMN","DL","HM","HK","IND","KP","KPA","KR","KU","LB","LP","MS","OT","PBJ","PI","PL","PP","PR","PST","PTK","PW","PWI","RT","TIK"];
+    const teamList = ["PJI","PKIV","OPTI","Tata Usaha","Keuangan"];
+    const bagianList = ["Tim Program","Tim TU","Tim PBJ","Tim Kerjasama","Tim Keuangan","Tim Pengembangan"];
+
+    // generate dummy entries (200)
+    function generateDummy(n=200){
+      const arr=[];
+      let counter=1;
+      const years=[2024,2025];
+      for(let i=0;i<n;i++){
+        const year = years[Math.floor(Math.random()*years.length)];
+        const month = Math.ceil(Math.random()*12); // 1..12
+        const date = Math.ceil(Math.random() * 28);
+        const klas = klasifikasiList[Math.floor(Math.random()*klasifikasiList.length)];
+        const tim = teamList[Math.floor(Math.random()*teamList.length)];
+        const bagian = bagianList[Math.floor(Math.random()*bagianList.length)];
+        const jenis = Math.random()>0.85? "Rahasia":"Biasa";
+        const nomorSurat = `B/${String(1000+counter)}/BPSDM/BSPJI-Ambon/${klas}/${year}`;
+        arr.push({
+          no: counter,
+          nomor: nomorSurat,
+          tanggal: date,
+          bulan: month,
+          tahun: year,
+          klasifikasi: klas,
+          bagian: bagian,
+          jenis: jenis,
+          tim: tim
+        });
+        counter++;
+      }
+      return arr;
+    }
+
+    const data = generateDummy(200);
+    let dataFiltered = [...data];
+
+    /***********************
+     * Populate filters
+     ************************/
+    function populateFilters(){
+      const tahun = [...new Set(data.map(d=>d.tahun))].sort();
+      const tSelect = document.getElementById('filterTahun');
+      tSelect.innerHTML = '<option value="">-- Pilih Tahun --</option>';
+      tahun.forEach(y=>{
+        const o=document.createElement('option'); o.value=y; o.textContent=y; tSelect.appendChild(o);
+      });
+
+      const bSelect = document.getElementById('filterBulan');
+      bSelect.innerHTML = '<option value="">-- Pilih Bulan --</option>';
+      for(let m=1;m<=12;m++){
+        const opt=document.createElement('option'); opt.value=m; opt.textContent=new Date(0,m-1).toLocaleString('id-ID',{month:'long'}); bSelect.appendChild(opt);
+      }
+
+      const kSelect = document.getElementById('filterKlasifikasi');
+      kSelect.innerHTML = '<option value="">-- Klasifikasi --</option>';
+      klasifikasiList.forEach(k=>{
+        const opt=document.createElement('option'); opt.value=k; opt.textContent=k; kSelect.appendChild(opt);
+      });
+    }
+
+    /***********************
+     * Render table with DataTables
+     ************************/
+    let table;
+    function renderTable(arr){
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      arr.forEach((row, idx)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx+1}</td>
+          <td>${row.nomor}</td>
+          <td>${row.tanggal}</td>
+          <td>${new Date(0,row.bulan-1).toLocaleString('id-ID',{month:'short'})}</td>
+          <td>${row.tahun}</td>
+          <td>${row.klasifikasi}</td>
+          <td>${row.bagian}</td>
+          <td>${row.jenis}</td>
+          <td>${row.tim}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if($.fn.dataTable.isDataTable('#suratTable')){
+        table.clear().destroy();
+      }
+      table = $('#suratTable').DataTable({
+        paging: true,
+        searching: false,
+        info: true,
+        lengthMenu: [10,25,50],
+        pageLength: 10,
+        order:[[4,'desc']]
+      });
+    }
+
+    /***********************
+     * Chart: jumlah per klasifikasi
+     ************************/
+    let klasChart;
+    function renderChart(arr){
+      const counts = {};
+      klasifikasiList.forEach(k=>counts[k]=0);
+      arr.forEach(d=>{ if(counts[d.klasifikasi]!==undefined) counts[d.klasifikasi]++ });
+      const labels = Object.keys(counts);
+      const values = labels.map(l=>counts[l]);
+      const ctx = document.getElementById('klasChart').getContext('2d');
+      if(klasChart) klasChart.destroy();
+      klasChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{ label:'Jumlah Klasifikasi', data: values }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{ticks:{autoSkip:false}},
+            y:{beginAtZero:true}
+          }
+        }
+      });
+    }
+
+    /***********************
+     * Filtering logic
+     ************************/
+    function applyFilters(){
+      const th = document.getElementById('filterTahun').value;
+      const bm = document.getElementById('filterBulan').value;
+      const tg = document.getElementById('filterTanggal').value;
+      const jenis = document.getElementById('filterJenis').value;
+      const klas = document.getElementById('filterKlasifikasi').value;
+      const tim = document.getElementById('filterTim').value;
+      const q = document.getElementById('searchBox').value.trim().toLowerCase();
+
+      dataFiltered = data.filter(d=>{
+        if(th && String(d.tahun)!==th) return false;
+        if(bm && String(d.bulan)!==bm) return false;
+        if(tg && String(d.tanggal)!==tg) return false;
+        if(jenis && d.jenis!==jenis) return false;
+        if(klas && d.klasifikasi!==klas) return false;
+        if(tim && d.tim!==tim) return false;
+        if(q){
+          const hay = (d.nomor + ' ' + d.bagian).toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      document.getElementById('totalSurat').textContent = dataFiltered.length;
+      renderChart(dataFiltered);
+      renderTable(dataFiltered);
+    }
+
+    function clearFilters(){
+      document.getElementById('filterTahun').value='';
+      document.getElementById('filterBulan').value='';
+      document.getElementById('filterTanggal').value='';
+      document.getElementById('filterJenis').value='';
+      document.getElementById('filterKlasifikasi').value='';
+      document.getElementById('filterTim').value='';
+      document.getElementById('searchBox').value='';
+      applyFilters();
+    }
+
+    // populate tanggal depend on selected year & month (dates existing in data)
+    function refreshTanggalOptions(){
+      const th = document.getElementById('filterTahun').value;
+      const bm = document.getElementById('filterBulan').value;
+      const tSelect = document.getElementById('filterTanggal');
+      tSelect.innerHTML = '<option value="">-- Pilih Tanggal --</option>';
+
+      const candidates = data.filter(d => {
+        if(th && String(d.tahun)!==th) return false;
+        if(bm && String(d.bulan)!==bm) return false;
+        return true;
+      }).map(d=>d.tanggal);
+
+      const uniq = [...new Set(candidates)].sort((a,b)=>a-b);
+      uniq.forEach(t=>{
+        const o=document.createElement('option'); o.value = t; o.textContent = t; tSelect.appendChild(o);
+      });
+    }
+
+    /***********************
+     * CSV Export
+     ************************/
+    function exportCSV(){
+      const rows = [['No','Nomor Surat','Tanggal','Bulan','Tahun','Klasifikasi','Asal Bagian','Jenis','Tim']];
+      dataFiltered.forEach((d,i)=>{
+        rows.push([i+1,d.nomor,d.tanggal,d.bulan,d.tahun,d.klasifikasi,d.bagian,d.jenis,d.tim]);
+      });
+      const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'aruna_data_export.csv'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    /***********************
+     * Navigation
+     ************************/
+    function showPage(name){
+      document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active', a.dataset.page===name));
+      document.getElementById('page-home').style.display = name==='home' ? '' : 'none';
+      document.getElementById('page-pedoman').style.display = name==='pedoman' ? '' : 'none';
+      document.getElementById('page-faq').style.display = name==='faq' ? '' : 'none';
+      // if pedoman page, attempt to set iframe src (so it loads)
+      if(name==='pedoman'){
+        const f = document.getElementById('pdfViewer');
+        f.src = f.src; // reload
+      }
+    }
+
+    /***********************
+     * Init
+     ************************/
+    document.addEventListener('DOMContentLoaded', ()=>{
+      populateFilters();
+      document.getElementById('totalSurat').textContent = data.length;
+      renderChart(data);
+      renderTable(data);
+
+      // events
+      ['filterTahun','filterBulan','filterTanggal','filterJenis','filterKlasifikasi','filterTim'].forEach(id=>{
+        document.getElementById(id).addEventListener('change', ()=>{
+          if(id==='filterTahun' || id==='filterBulan') refreshTanggalOptions();
+          applyFilters();
+        });
+      });
+      document.getElementById('searchBox').addEventListener('input', ()=>applyFilters());
+      document.getElementById('exportCsv').addEventListener('click', exportCSV);
+
+      // nav links
+      document.querySelectorAll('nav a').forEach(a=>{
+        a.addEventListener('click', (ev)=>{
+          ev.preventDefault();
+          showPage(a.dataset.page);
+        });
+      });
+
+      // initial total count & populate klasifikasi dropdown with alphabetic order
+      const ksel = document.getElementById('filterKlasifikasi');
+      // already filled, keep order as is
+
+      // populate tanggal options initially
+      refreshTanggalOptions();
+    });
+
+  </script>
+</body>
+</html>
