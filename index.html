@@ -132,7 +132,7 @@
           <!-- text ARUNA -->
           <g transform="translate(70,12)" font-family="Inter, Arial, sans-serif">
             <text x="0" y="16" font-size="28" font-weight="700" fill="url(#g1)">SINAR</text> 
-            <text x="0" y="36" font-size="11" fill="#6b6b6b">Sistem Informasi Nomor Arsip & Registrasi</text> 
+            <text x="0" y="36" font-size="11" fill="#6b6b6b">Sistem Informasi Nomor Arsip</text> 
           </g>
         </svg>
       </div>
@@ -162,7 +162,7 @@
           <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
             <div>
               <h2 style="margin:0 0 6px 0">Dashboard Monitoring Tata Naskah Dinas</h2>
-              <div class="tagline">SINAR — Sistem Informasi Nomor Arsip & Registrasi | BSPJI Ambon</div>
+              <div class="tagline">SINAR — Sistem Informasi Nomor Arsip | BSPJI Ambon</div>
             </div>
             <div style="min-width:220px">
               <div class="stat">
@@ -239,20 +239,19 @@
     </section>
 
     <!-- PEDOMAN PAGE -->
-    <section id="page-pedoman" style="display:none">
-      <div class="card">
-        <h2>Pedoman & Dokumen</h2>
-        <p style="color:var(--muted)">Unduh dan scroll pedoman penomoran naskah dinas di bawah. Letakkan file PDF pada <code>/assets/pedoman.pdf</code></p>
+<section id="page-pedoman" style="display:none">
+      <div class="card">
+        <h2>Pedoman & Dokumen</h2>
 
-        <div style="margin:12px 0">
-          <iframe id="pdfViewer" src="assets/pedoman.pdf" width="100%" height="600px" style="border:1px solid #eee;border-radius:8px"></iframe>
-        </div>
+        <div style="margin:12px 0">
+          <iframe id="pdfViewer" src="assets/pedoman.pdf" width="100%" height="600px" style="border:1px solid #eee;border-radius:8px"></iframe>
+        </div>
+...
 
-        <div style="margin-top:10px">
-          <h3>Infografis</h3>
-          <p style="color:var(--muted)">Gambar infografis terkait proses penomoran (format JPG/PNG). Letakkan pada <code>/assets/infografis.jpg</code></p>
-          <img src="assets/infografis.jpg" alt="Infografis" style="max-width:100%;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06)">
-        </div>
+<div style="margin-top:10px">
+          <h3>Infografis</h3>
+          <img src="assets/infografis.jpg" alt="Infografis" style="max-width:100%;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+        </div>
       </div>
     </section>
 
@@ -263,28 +262,28 @@
         <div style="margin-top:12px">
           <details open>
             <summary style="font-weight:700">Bagaimana cara mengajukan penomoran surat?</summary>
-            <div style="padding:8px 12px;color:var(--muted)">Gunakan formulir internal dan pilih tim penyusun, jenis surat, klasifikasi lalu submit — sistem ARUNA akan menghasilkan nomor otomatis dan menyimpan historinya.</div>
+            <div style="padding:8px 12px;color:var(--muted)">Hubungi bagian arsiparis atau datang langsung ke ruangan administrasi 1.</div>
           </details>
 
           <details style="margin-top:10px">
-            <summary style="font-weight:700">Siapa yang dapat mengakses ARUNA?</summary>
-            <div style="padding:8px 12px;color:var(--muted)">User internal BSPJI Ambon yang terdaftar (akun dinas). Hak akses bisa dibatasi oleh admin.</div>
+            <summary style="font-weight:700">Siapa yang dapat mengakses SINAR?</summary>
+            <div style="padding:8px 12px;color:var(--muted)">Semua pegawai BSPJI Ambon.</div>
           </details>
 
           <details style="margin-top:10px">
             <summary style="font-weight:700">File pedoman tidak terbuka / PDF tidak muncul — apa yang harus dilakukan?</summary>
-            <div style="padding:8px 12px;color:var(--muted)">Pastikan file <code>/assets/pedoman.pdf</code> ada di repo. Jika masih bermasalah, cek log browser (Console) untuk pesan error CORS atau path file.</div>
+            <div style="padding:8px 12px;color:var(--muted)">Pastikan jaringan internet sudah baik dan refresh halaman website. Jika masih tidak bisa, hubungi admin terkait.</div>
           </details>
 
           <details style="margin-top:10px">
-            <summary style="font-weight:700">Bagaimana cara mengganti logo BSPJI atau Kementerian?</summary>
-            <div style="padding:8px 12px;color:var(--muted)">Ganti file gambar di <code>/assets/logo_bspji.png</code> dan <code>/assets/logo_kemenperin.png</code> atau edit tag <code>&lt;img&gt;</code>.</div>
+            <summary style="font-weight:700">Apakah perbedaan kode surat menggunakan B/R/T dengan yang tidak?</summary>
+            <div style="padding:8px 12px;color:var(--muted)">Surat dengan kode B/R/T disesuaikan dengan jenis surat dinas tersebut, apakah biasa, rahasia, atau terbatas.</div>
           </details>
         </div>
       </div>
     </section>
 
-    <footer class="small">Dibuat untuk BSPJI Ambon — ARUNA Demo • Source: contoh data</footer>
+    <footer class="small">Dibuat untuk BSPJI Ambon — SINAR </footer>
   </main>
 
   <!-- JS libs -->
