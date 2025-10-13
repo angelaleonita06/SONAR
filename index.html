@@ -293,44 +293,58 @@
 
   <script>
     /***********************
-     * Sample data generator
+     * Google Sheet Data Loader
      ************************/
-    const klasifikasiList = ["BMN","DL","HM","HK","IND","KP","KPA","KR","KU","LB","LP","MS","OT","PBJ","PI","PL","PP","PR","PST","PTK","PW","PWI","RT","TIK"];
-    const teamList = ["PJI","PKIV","OPTI","Tata Usaha","Keuangan"];
-    const bagianList = ["Tim Program","Tim TU","Tim PBJ","Tim Kerjasama","Tim Keuangan","Tim Pengembangan"];
+    // PASTE URL PUBLIKASI CSV GOOGLE SHEET ANDA DI BAWAH INI
+    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-1XZLe5ZdU38k3c6I0VJRWT1iEPNQr05U4AYAT_9Km-lmtzyaFc3nIRNy5jsYUA/pub?gid=891390375&single=true&output=csv'; 
+    
+    let klasifikasiList = []; // Akan diisi dari data sheet
+    let data = [];
+    let dataFiltered = [];
 
-    // generate dummy entries (200)
-    function generateDummy(n=200){
-      const arr=[];
-      let counter=1;
-      const years=[2024,2025];
-      for(let i=0;i<n;i++){
-        const year = years[Math.floor(Math.random()*years.length)];
-        const month = Math.ceil(Math.random()*12); // 1..12
-        const date = Math.ceil(Math.random() * 28);
-        const klas = klasifikasiList[Math.floor(Math.random()*klasifikasiList.length)];
-        const tim = teamList[Math.floor(Math.random()*teamList.length)];
-        const bagian = bagianList[Math.floor(Math.random()*bagianList.length)];
-        const jenis = Math.random()>0.85? "Rahasia":"Biasa";
-        const nomorSurat = `B/${String(1000+counter)}/BPSDM/BSPJI-Ambon/${klas}/${year}`;
-        arr.push({
-          no: counter,
-          nomor: nomorSurat,
-          tanggal: date,
-          bulan: month,
-          tahun: year,
-          klasifikasi: klas,
-          bagian: bagian,
-          jenis: jenis,
-          tim: tim
-        });
-        counter++;
+    // Fungsi untuk mengambil dan memproses data CSV
+    async function loadDataFromSheet() {
+      try {
+        const response = await fetch(SPREADSHEET_URL);
+        if (!response.ok) throw new Error('Gagal mengambil data dari Google Sheet. Cek URL atau status publikasi.');
+        
+        const csvText = await response.text();
+        const rows = csvText.trim().split('\n');
+        
+        // Asumsi header ada di baris pertama
+        const headers = rows[0].split(',').map(h => h.trim()); 
+        
+        data = rows.slice(1).map(row => {
+          const values = row.split(',');
+          const obj = {};
+          headers.forEach((key, i) => {
+            let value = (values[i] || '').trim().replace(/"/g, ''); // Hapus tanda kutip ganda
+            
+            // Konversi nilai yang seharusnya numerik ke integer
+            if (['no', 'tanggal', 'bulan', 'tahun'].includes(key)) {
+                obj[key] = parseInt(value, 10) || 0; 
+            } else {
+                obj[key] = value;
+            }
+          });
+          return obj;
+        }).filter(d => d.nomor && d.nomor.length > 0 && d.tahun); // Filter baris kosong
+
+        dataFiltered = [...data];
+        
+        // Ambil daftar klasifikasi unik dari data baru untuk filter dan chart
+        const klasifikasiSet = new Set(data.map(d => d.klasifikasi).filter(k => k)); 
+        klasifikasiList = Array.from(klasifikasiSet).sort();
+        
+        // Panggil inisialisasi setelah data dimuat
+        initializeDataApp(); 
+
+      } catch (error) {
+        console.error("Gagal memuat data:", error);
+        document.getElementById('totalSurat').textContent = 'Error';
+        alert("Gagal memuat data dari Google Sheet. Periksa URL publikasi dan koneksi internet.");
       }
-      return arr;
     }
-
-    const data = generateDummy(200);
-    let dataFiltered = [...data];
 
     /***********************
      * Populate filters
@@ -517,7 +531,9 @@
     /***********************
      * Init
      ************************/
-    document.addEventListener('DOMContentLoaded', ()=>{
+    
+    // Fungsi untuk inisialisasi aplikasi setelah data dimuat
+    function initializeDataApp(){
       populateFilters();
       document.getElementById('totalSurat').textContent = data.length;
       renderChart(data);
@@ -541,12 +557,13 @@
         });
       });
 
-      // initial total count & populate klasifikasi dropdown with alphabetic order
-      const ksel = document.getElementById('filterKlasifikasi');
-      // already filled, keep order as is
-
       // populate tanggal options initially
       refreshTanggalOptions();
+    }
+    
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // Panggil fungsi pemuat data, yang akan memanggil initializeDataApp setelah berhasil
+      loadDataFromSheet(); 
     });
 
   </script>
